@@ -3,6 +3,8 @@
 `i3-scratchpad-switcher` is a lightweight GTK3 window switcher for the i3 scratchpad.
 It opens a centered grid of scratchpad windows, supports keyboard navigation and filtering, and focuses the selected window through native i3 IPC.
 
+![Screenshot](./assets/screenshot.png)
+
 ## Features
 
 - Native i3 IPC (no `i3-msg` shell calls)

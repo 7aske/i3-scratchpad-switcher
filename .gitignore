@@ -1,0 +1,7 @@
+i3-scratchpad-switcher
+*.o
+*.swp
+*.swo
+.DS_Store
+
+.idea/

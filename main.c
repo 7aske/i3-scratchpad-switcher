@@ -985,7 +985,11 @@ static gboolean on_key_press(GtkWidget *widget, GdkEventKey *event, gpointer use
   }
 
   switch (event->keyval) {
+    case GDK_KEY_ISO_Left_Tab:
+      next_pos = current_pos - 1;
+      break;
     case GDK_KEY_Tab:
+    case GDK_KEY_KP_Tab:
       if ((event->state & GDK_SHIFT_MASK) != 0) {
         next_pos = current_pos - 1;
       } else {
@@ -1112,6 +1116,7 @@ static GtkWidget *build_entry_tile(AppState *state, ScratchpadEntry *entry, int 
   g_object_set_data(G_OBJECT(btn), "entry-index", (gpointer)(intptr_t)index);
   g_signal_connect(btn, "clicked", G_CALLBACK(on_entry_clicked), state);
   g_signal_connect(btn, "focus-in-event", G_CALLBACK(on_entry_button_focus), state);
+  g_signal_connect(btn, "key-press-event", G_CALLBACK(on_key_press), state);
   return btn;
 }
 
@@ -1343,6 +1348,7 @@ int main(int argc, char **argv) {
   g_signal_connect(win, "key-press-event", G_CALLBACK(on_key_press), &state);
   g_signal_connect(win, "focus-out-event", G_CALLBACK(on_window_focus_out), NULL);
   g_signal_connect(win, "destroy", G_CALLBACK(gtk_main_quit), NULL);
+  g_signal_connect(search, "key-press-event", G_CALLBACK(on_key_press), &state);
   g_signal_connect(search, "changed", G_CALLBACK(on_search_changed), &state);
 
   refresh_entries(&state);

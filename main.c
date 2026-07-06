@@ -41,6 +41,7 @@ typedef struct {
 static int g_lock_fd = -1;
 static char *g_xresources_text = NULL;
 static gboolean g_xresources_loaded = FALSE;
+static gboolean g_persistent = FALSE;
 
 enum {
   I3_IPC_MESSAGE_COMMAND = 0,
@@ -1038,7 +1039,9 @@ static gboolean on_window_focus_out(GtkWidget *widget, GdkEventFocus *event, gpo
   (void)widget;
   (void)event;
   (void)user_data;
-  gtk_main_quit();
+  if (!g_persistent) {
+    gtk_main_quit();
+  }
   return FALSE;
 }
 
@@ -1265,8 +1268,21 @@ static void apply_css(void) {
   g_free(bg_with_alpha);
 }
 
+static void parse_cli_options(int *argc, char ***argv) {
+  int out = 1;
+  for (int i = 1; i < *argc; i++) {
+    if (strcmp((*argv)[i], "--persistent") == 0) {
+      g_persistent = TRUE;
+    } else {
+      (*argv)[out++] = (*argv)[i];
+    }
+  }
+  (*argv)[out] = NULL;
+  *argc = out;
+}
+
 int main(int argc, char **argv) {
-  (void)argv;
+  parse_cli_options(&argc, &argv);
   if (!acquire_single_instance_lock()) {
     g_printerr("i3-scratchpad-switcher is already running.\n");
     return 1;
